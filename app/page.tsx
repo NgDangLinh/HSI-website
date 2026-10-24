@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getProducts, getProductCategories } from '@/lib/api/products';
 import { getPosts } from '@/lib/api/wordpress';
-import { COMPANY_INFO, SOLUTIONS, PARTNERS } from '@/lib/data/companyInfo';
+import { COMPANY_INFO, SOLUTIONS, PARTNERS, WHY_CHOOSE_US } from '@/lib/data/companyInfo';
 import ProductCard from '@/components/product/ProductCard';
 import HeroActions from '@/components/home/HeroActions';
 import ConsultationButton from '@/components/common/ConsultationButton';
@@ -272,22 +272,101 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 6. GLOBAL STRATEGIC PARTNERS */}
-      <section className="py-12 bg-white border-b border-slate-200">
+      {/* 6. WHY CHOOSE HSI CORP */}
+      <section className="py-20 bg-slate-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">
-            Đối Tác Sản Xuất Thiết Bị Y Tế Toàn Cầu
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14">
-            {PARTNERS.map((partner, index) => (
-              <div key={index} className="flex flex-col items-center group">
-                <span className="text-base sm:text-lg font-black text-slate-700 tracking-tight group-hover:text-[#006543] transition-colors">
-                  {partner.name}
-                </span>
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                  {partner.country}
-                </span>
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-2">
+              Giá Trị Cốt Lõi & Cam Kết
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              LÝ DO CHỌN HSI CORP
+            </h2>
+            <p className="text-xs sm:text-base text-slate-600 mt-3 leading-relaxed">
+              HSI Corp luôn đồng hành cùng các bệnh viện, trung tâm y tế với công nghệ hiện đại bậc nhất, quy trình chuẩn mực và dịch vụ tận tâm.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {WHY_CHOOSE_US.map((item, index) => (
+              <div
+                key={index}
+                className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#006543]/40 transition-all duration-300 flex flex-col"
+              >
+                <div className="relative aspect-[16/11] overflow-hidden bg-slate-100">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#006543] text-white text-xs font-black flex items-center justify-center shadow-md">
+                    0{index + 1}
+                  </div>
+                </div>
+                <div className="p-6 flex-1 flex flex-col">
+                  <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#006543] transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. GLOBAL STRATEGIC PARTNERS */}
+      <section className="py-16 bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-1">
+                Mạng Lưới Quốc Tế
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Đối Tác Sản Xuất Thiết Bị Y Tế Toàn Cầu
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+                HSI Corp là đại diện phân phối chính hãng và đối tác chiến lược tại Việt Nam của các tập đoàn y sinh hàng đầu thế giới.
+              </p>
+            </div>
+            <Link
+              href="/partners"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#006543] hover:text-[#055b38] transition-colors"
+            >
+              Xem chi tiết mạng lưới đối tác <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            {PARTNERS.map((partner, index) => (
+              <Link
+                key={index}
+                href={`/partners#partner-${index}`}
+                className="group p-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 hover:bg-white hover:border-[#006543]/40 hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-between text-center min-h-[140px]"
+              >
+                <div className="h-14 w-full flex items-center justify-center px-2">
+                  <Image
+                    src={partner.logo}
+                    alt={partner.name}
+                    width={140}
+                    height={46}
+                    className="max-h-11 max-w-[130px] w-auto h-auto object-contain filter group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="w-full pt-2 border-t border-slate-100">
+                  <span className="text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-[#006543] transition-colors block">
+                    {partner.name}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-medium block mt-0.5">
+                    {partner.country}
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
