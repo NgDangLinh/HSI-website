@@ -42,11 +42,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6 flex-wrap">
-          <Link href="/" className="hover:text-blue-900">
+          <Link href="/" className="hover:text-[#006543]">
             Trang chủ
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-400" />
-          <Link href="/products" className="hover:text-blue-900">
+          <Link href="/products" className="hover:text-[#006543]">
             Thiết bị y tế
           </Link>
           {product.categories?.[0] && (
@@ -54,7 +54,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <ChevronRight className="w-3 h-3 text-slate-400" />
               <Link
                 href={`/products?category=${product.categories[0].slug}`}
-                className="hover:text-blue-900"
+                className="hover:text-[#006543]"
               >
                 {product.categories[0].name}
               </Link>
@@ -79,12 +79,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   <p className="text-[10px] text-slate-400">Đầy đủ CO/CQ</p>
                 </div>
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                  <Award className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                  <Award className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
                   <p className="text-[11px] font-semibold text-slate-700">Đạt chuẩn CE/FDA</p>
                   <p className="text-[10px] text-slate-400">ISO 13485</p>
                 </div>
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                  <Wrench className="w-5 h-5 text-cyan-600 mx-auto mb-1" />
+                  <Wrench className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
                   <p className="text-[11px] font-semibold text-slate-700">Kỹ thuật 24/7</p>
                   <p className="text-[10px] text-slate-400">Chuyển giao tận nơi</p>
                 </div>
@@ -97,7 +97,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 {/* Category & Status */}
                 <div className="flex items-center gap-2 mb-3">
                   {product.categories?.[0] && (
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-900 border border-blue-200">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#006543] border border-emerald-200">
                       {product.categories[0].name}
                     </span>
                   )}
@@ -138,17 +138,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </div>
 
               {/* Action Box: Pure Showcase Consultation (No Cart/No Checkout) */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-950 to-slate-900 text-white space-y-4 shadow-lg">
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-[#003825] via-[#004d33] to-slate-900 text-white space-y-4 shadow-lg">
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <div>
-                    <span className="text-[11px] font-semibold text-cyan-300 uppercase tracking-wider block">
+                    <span className="text-[11px] font-semibold text-emerald-300 uppercase tracking-wider block">
                       Hình thức phân phối
                     </span>
                     <span className="text-base font-bold text-white">
                       Báo giá dự án & Tư vấn kỹ thuật
                     </span>
                   </div>
-                  <span className="text-xs bg-cyan-900/50 text-cyan-300 border border-cyan-500/40 px-2.5 py-1 rounded-md font-medium">
+                  <span className="text-xs bg-cyan-900/50 text-emerald-300 border border-cyan-500/40 px-2.5 py-1 rounded-md font-medium">
                     Giá theo cấu hình
                   </span>
                 </div>
@@ -167,7 +167,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                       href={`tel:${COMPANY_INFO.hotline.replace(/\s+/g, '')}`}
                       className="inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-colors"
                     >
-                      <Phone className="w-3.5 h-3.5 text-cyan-400" />
+                      <Phone className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Hotline: {COMPANY_INFO.hotline}</span>
                     </a>
 
@@ -193,7 +193,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {/* Specifications Table */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-blue-900" />
+                <Sparkles className="w-5 h-5 text-[#006543]" />
                 Thông Số Kỹ Thuật Chi Tiết
               </h2>
 
@@ -216,7 +216,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                       ))}
                       <tr className="bg-slate-50/60">
                         <td className="px-4 py-3 font-semibold text-slate-700">Mã thiết bị</td>
-                        <td className="px-4 py-3 font-mono text-blue-900 font-bold">{product.sku}</td>
+                        <td className="px-4 py-3 font-mono text-[#006543] font-bold">{product.sku}</td>
                       </tr>
                       <tr>
                         <td className="px-4 py-3 font-semibold text-slate-700">Chế độ bảo hành</td>
@@ -303,7 +303,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </h2>
               <Link
                 href="/products"
-                className="text-xs font-bold text-blue-900 hover:text-cyan-600"
+                className="text-xs font-bold text-[#006543] hover:text-cyan-600"
               >
                 Xem tất cả thiết bị
               </Link>

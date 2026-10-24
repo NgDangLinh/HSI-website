@@ -17,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const categoryName = product.categories?.[0]?.name || 'Thiết bị y tế';
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-blue-400/50 transition-all duration-300 flex flex-col overflow-hidden">
+    <div className="group relative bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-500/50 transition-all duration-300 flex flex-col overflow-hidden">
       {/* Product Image & Badges */}
       <div
         className="relative aspect-square bg-slate-50/60 p-4 overflow-hidden rounded-t-2xl flex items-center justify-center"
@@ -36,7 +36,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Category Pill */}
         <div className="absolute top-3 left-3 z-10">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-900/85 backdrop-blur-md text-white shadow-sm">
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#006543]/90 backdrop-blur-md text-white shadow-sm">
             {categoryName}
           </span>
         </div>
@@ -65,7 +65,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           {/* Product Title */}
           <Link href={`/products/${product.id}`}>
-            <h3 className="font-bold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-blue-900 transition-colors mb-2">
+            <h3 className="font-bold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-[#006543] transition-colors mb-2">
               {product.name}
             </h3>
           </Link>
@@ -88,7 +88,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <button
             onClick={() => openConsultation(product.name, product.sku)}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-xl shadow-sm transition-all"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold text-white bg-[#006543] hover:bg-[#055b38] rounded-xl shadow-sm transition-all"
           >
             <FileText className="w-3.5 h-3.5" />
             Nhận tư vấn

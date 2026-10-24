@@ -36,7 +36,7 @@ export default function ContactForm() {
         </p>
         <button
           onClick={() => setSubmitted(false)}
-          className="py-2.5 px-6 bg-blue-900 hover:bg-blue-800 text-white font-semibold text-xs rounded-xl"
+          className="py-2.5 px-6 bg-[#006543] hover:bg-[#055b38] text-white font-semibold text-xs rounded-xl"
         >
           Gửi yêu cầu khác
         </button>
@@ -55,7 +55,7 @@ export default function ContactForm() {
 
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-          <User className="w-3.5 h-3.5 text-blue-600" />
+          <User className="w-3.5 h-3.5 text-[#006543]" />
           Họ và tên người liên hệ <span className="text-rose-500">*</span>
         </label>
         <input
@@ -64,14 +64,14 @@ export default function ContactForm() {
           placeholder="Ví dụ: Bác sĩ Nguyễn Văn A"
           value={formData.fullName}
           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-          className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400"
+          className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-            <Phone className="w-3.5 h-3.5 text-blue-600" />
+            <Phone className="w-3.5 h-3.5 text-[#006543]" />
             Số điện thoại <span className="text-rose-500">*</span>
           </label>
           <input
@@ -80,12 +80,12 @@ export default function ContactForm() {
             placeholder="0912 345 678"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400"
+            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400"
           />
         </div>
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-            <Mail className="w-3.5 h-3.5 text-blue-600" />
+            <Mail className="w-3.5 h-3.5 text-[#006543]" />
             Email nhận báo giá
           </label>
           <input
@@ -93,7 +93,7 @@ export default function ContactForm() {
             placeholder="bacsi@benhvien.vn"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400"
+            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400"
           />
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-            <Building className="w-3.5 h-3.5 text-blue-600" />
+            <Building className="w-3.5 h-3.5 text-[#006543]" />
             Bệnh viện / Cơ sở y tế <span className="text-rose-500">*</span>
           </label>
           <input
@@ -110,7 +110,7 @@ export default function ContactForm() {
             placeholder="Tên bệnh viện hoặc phòng khám"
             value={formData.organization}
             onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
-            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400"
+            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400"
           />
         </div>
         <div>
@@ -122,14 +122,14 @@ export default function ContactForm() {
             placeholder="Khoa Thăm dò chức năng, Ngoại, ICU..."
             value={formData.department}
             onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400"
+            className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400"
           />
         </div>
       </div>
 
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-          <FileText className="w-3.5 h-3.5 text-blue-600" />
+          <FileText className="w-3.5 h-3.5 text-[#006543]" />
           Nội dung yêu cầu (Dòng máy quan tâm, Phương án thuê/xã hội hóa...)
         </label>
         <textarea
@@ -137,7 +137,7 @@ export default function ContactForm() {
           placeholder="Mô tả nhu cầu cấu hình thiết bị, số lượng hoặc câu hỏi kỹ thuật..."
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900 placeholder:text-slate-400 resize-none"
+          className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900 placeholder:text-slate-400 resize-none"
         />
       </div>
 

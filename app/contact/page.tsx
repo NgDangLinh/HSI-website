@@ -16,7 +16,7 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-          <Link href="/" className="hover:text-blue-900">
+          <Link href="/" className="hover:text-[#006543]">
             Trang chủ
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-400" />
@@ -25,7 +25,7 @@ export default function ContactPage() {
 
         {/* Header */}
         <div className="mb-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 block mb-1">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-1">
             Kết Nối Cùng HSI Corp
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
@@ -46,13 +46,13 @@ export default function ContactPage() {
           {/* Quick info & Branches */}
           <div className="lg:col-span-5 space-y-6">
             {/* Direct Hotline Box */}
-            <div className="bg-gradient-to-br from-blue-950 to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg space-y-4">
+            <div className="bg-gradient-to-br from-[#003825] to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-300">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-300">
                   <Headphones className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-xs text-cyan-300 font-semibold uppercase tracking-wider">
+                  <span className="text-xs text-emerald-300 font-semibold uppercase tracking-wider">
                     Tổng đài hỗ trợ 24/7
                   </span>
                   <h3 className="text-lg font-bold">Hotline Dự Án & Kỹ Thuật</h3>
@@ -62,17 +62,17 @@ export default function ContactPage() {
               <div className="space-y-3 pt-2 text-xs">
                 <a
                   href={`tel:${COMPANY_INFO.hotline.replace(/\s+/g, '')}`}
-                  className="flex items-center gap-2.5 text-white hover:text-cyan-300 transition-colors"
+                  className="flex items-center gap-2.5 text-white hover:text-emerald-300 transition-colors"
                 >
-                  <Phone className="w-4 h-4 text-cyan-400" />
+                  <Phone className="w-4 h-4 text-emerald-400" />
                   <span className="text-base font-black tracking-tight">{COMPANY_INFO.hotline}</span>
                 </a>
                 <div className="flex items-center gap-2.5 text-slate-300">
-                  <Mail className="w-4 h-4 text-cyan-400" />
+                  <Mail className="w-4 h-4 text-emerald-400" />
                   <span>{COMPANY_INFO.email}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-slate-300">
-                  <Clock className="w-4 h-4 text-cyan-400" />
+                  <Clock className="w-4 h-4 text-emerald-400" />
                   <span>{COMPANY_INFO.workingHours}</span>
                 </div>
               </div>
@@ -86,12 +86,12 @@ export default function ContactPage() {
 
               <div className="space-y-4 text-xs">
                 {BRANCHES.map((b, idx) => (
-                  <div key={idx} className="border-l-2 border-blue-900 pl-3">
+                  <div key={idx} className="border-l-2 border-[#006543] pl-3">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">
                         {b.name} ({b.city})
                       </strong>
-                      <span className="text-blue-900 font-mono font-semibold">{b.phone}</span>
+                      <span className="text-[#006543] font-mono font-semibold">{b.phone}</span>
                     </div>
                     <p className="text-slate-500 text-[11px] mt-0.5">{b.address}</p>
                   </div>

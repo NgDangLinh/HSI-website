@@ -25,7 +25,7 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-          <Link href="/" className="hover:text-blue-900">
+          <Link href="/" className="hover:text-[#006543]">
             Trang chủ
           </Link>
           <ChevronRight className="w-3 h-3 text-slate-400" />
@@ -33,9 +33,9 @@ export default function AboutPage() {
         </nav>
 
         {/* Hero Banner About */}
-        <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white rounded-3xl p-8 sm:p-14 relative overflow-hidden mb-12 shadow-xl">
+        <div className="bg-gradient-to-br from-slate-950 via-[#003825] to-slate-900 text-white rounded-3xl p-8 sm:p-14 relative overflow-hidden mb-12 shadow-xl">
           <div className="max-w-3xl space-y-5 relative z-10">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-semibold">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5" />
               Thành lập từ năm 2010
             </span>
@@ -51,7 +51,7 @@ export default function AboutPage() {
         {/* Core Values */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <div className="bg-white p-7 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center mb-4">
               <Award className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-slate-900 text-base mb-2">Chất Lượng Chuẩn Quốc Tế</h3>
@@ -61,7 +61,7 @@ export default function AboutPage() {
           </div>
 
           <div className="bg-white p-7 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center mb-4">
               <Building2 className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-slate-900 text-base mb-2">Giải Pháp Đầu Tư Linh Hoạt</h3>
@@ -84,7 +84,7 @@ export default function AboutPage() {
         {/* 4 Branch Offices */}
         <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-sm mb-16">
           <div className="max-w-2xl mb-8">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 block mb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-1">
               Mạng Lưới Toàn Quốc
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
@@ -99,14 +99,14 @@ export default function AboutPage() {
             {BRANCHES.map((b, idx) => (
               <div
                 key={idx}
-                className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-400 transition-colors"
+                className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-emerald-500/50 transition-colors"
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-slate-900 text-base">
-                    {b.name} <span className="text-blue-900 font-semibold">({b.city})</span>
+                    {b.name} <span className="text-[#006543] font-semibold">({b.city})</span>
                   </h3>
                   {b.isHeadquarter && (
-                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-blue-900 text-white">
+                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#006543] text-white">
                       Trụ sở chính
                     </span>
                   )}
@@ -114,15 +114,15 @@ export default function AboutPage() {
 
                 <div className="space-y-2 text-xs text-slate-600">
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{b.address}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-cyan-600 shrink-0" />
+                    <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span className="font-mono font-medium text-slate-800">{b.phone}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-cyan-600 shrink-0" />
+                    <Mail className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span>{b.email}</span>
                   </div>
                 </div>
@@ -147,7 +147,7 @@ export default function AboutPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="bg-gradient-to-r from-blue-950 to-cyan-900 text-white rounded-3xl p-8 sm:p-10 text-center">
+        <div className="bg-gradient-to-r from-[#003825] to-[#006543] text-white rounded-3xl p-8 sm:p-10 text-center">
           <h3 className="text-xl sm:text-2xl font-bold mb-3">
             Hợp Tác Cùng HSI Corp Nâng Cao Năng Lực Y Tế
           </h3>

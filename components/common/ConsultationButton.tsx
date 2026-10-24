@@ -25,11 +25,11 @@ export default function ConsultationButton({
 
   let baseStyle = 'inline-flex items-center justify-center gap-2 font-bold transition-all rounded-xl';
   if (variant === 'primary') {
-    baseStyle += ' bg-gradient-to-r from-blue-900 to-cyan-700 hover:from-blue-800 hover:to-cyan-600 text-white shadow-md hover:shadow-lg';
+    baseStyle += ' bg-[#006543] hover:bg-[#055b38] text-white shadow-md hover:shadow-lg';
   } else if (variant === 'white') {
-    baseStyle += ' bg-white hover:bg-slate-100 text-blue-950 shadow-md';
+    baseStyle += ' bg-white hover:bg-slate-100 text-[#006543] shadow-md';
   } else {
-    baseStyle += ' border border-blue-900 text-blue-900 hover:bg-blue-50';
+    baseStyle += ' border border-[#006543] text-[#006543] hover:bg-emerald-50';
   }
 
   return (

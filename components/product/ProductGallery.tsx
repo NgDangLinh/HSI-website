@@ -48,7 +48,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
               style={{ position: 'relative' }}
               className={`relative w-20 h-20 bg-white rounded-xl overflow-hidden border-2 shrink-0 transition-all p-1.5 ${
                 activeImageIndex === index
-                  ? 'border-blue-900 shadow-md ring-2 ring-blue-900/20'
+                  ? 'border-[#006543] shadow-md ring-2 ring-[#006543]/20'
                   : 'border-slate-200 opacity-70 hover:opacity-100'
               }`}
             >

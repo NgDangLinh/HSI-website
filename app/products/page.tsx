@@ -20,7 +20,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     getProducts({
       category: currentCategory,
       search: currentSearch,
-      perPage: 24,
+      perPage: 100,
     }),
     getProductCategories(),
   ]);
@@ -33,7 +33,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         {/* Breadcrumb & Title */}
         <div className="mb-8">
           <nav className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <Link href="/" className="hover:text-blue-900">
+            <Link href="/" className="hover:text-[#006543]">
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3" />
@@ -41,7 +41,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {activeCategoryObj && (
               <>
                 <ChevronRight className="w-3 h-3" />
-                <span className="text-blue-900 font-bold">{activeCategoryObj.name}</span>
+                <span className="text-[#006543] font-bold">{activeCategoryObj.name}</span>
               </>
             )}
           </nav>
@@ -59,7 +59,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
             {/* Total items badge */}
             <div className="text-xs font-semibold text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-sm shrink-0">
-              Hiển thị: <strong className="text-blue-900">{products.length}</strong> thiết bị
+              Hiển thị: <strong className="text-[#006543]">{products.length}</strong> thiết bị
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               name="search"
               defaultValue={currentSearch}
               placeholder="Tìm theo tên máy, mã SKU..."
-              className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-slate-900"
+              className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#006543] text-slate-900"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           </form>
@@ -91,7 +91,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </Link>
             )}
             {currentSearch && (
-              <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-blue-50 text-blue-800 border border-blue-200">
+              <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-[#006543] border border-emerald-200">
                 Từ khóa: &ldquo;{currentSearch}&rdquo;
               </span>
             )}
@@ -104,7 +104,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <aside className="lg:col-span-1 space-y-6">
             <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
               <h3 className="font-bold text-slate-900 text-sm mb-4 flex items-center gap-2">
-                <Filter className="w-4 h-4 text-blue-900" />
+                <Filter className="w-4 h-4 text-[#006543]" />
                 Phân Loại Thiết Bị
               </h3>
 
@@ -113,7 +113,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   href={currentSearch ? `/products?search=${encodeURIComponent(currentSearch)}` : '/products'}
                   className={`block px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                     !currentCategory
-                      ? 'bg-blue-900 text-white font-bold'
+                      ? 'bg-[#006543] text-white font-bold'
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
@@ -132,7 +132,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       href={targetUrl}
                       className={`block px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                         isActive
-                          ? 'bg-blue-900 text-white font-bold'
+                          ? 'bg-[#006543] text-white font-bold'
                           : 'text-slate-600 hover:bg-slate-100'
                       }`}
                     >
@@ -144,13 +144,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             </div>
 
             {/* Quality Standard Notice Card */}
-            <div className="bg-gradient-to-br from-blue-950 to-slate-900 text-white p-5 rounded-2xl shadow-sm">
-              <Sparkles className="w-5 h-5 text-cyan-400 mb-3" />
+            <div className="bg-gradient-to-br from-[#003825] via-[#004d33] to-slate-900 text-white p-5 rounded-2xl shadow-sm">
+              <Sparkles className="w-5 h-5 text-emerald-400 mb-3" />
               <h4 className="font-bold text-sm mb-1.5">Tiêu Chuẩn Thiết Bị</h4>
               <p className="text-xs text-slate-300 leading-relaxed mb-4">
                 Tất cả thiết bị đều có hồ sơ pháp lý, giấy phép Bộ Y Tế, chứng nhận ISO 13485 và CO/CQ gốc từ hãng sản xuất.
               </p>
-              <div className="text-[11px] text-cyan-300 font-semibold border-t border-white/10 pt-3">
+              <div className="text-[11px] text-emerald-300 font-semibold border-t border-white/10 pt-3">
                 Hotline Dự Án: 024 6685 0182
               </div>
             </div>
@@ -175,7 +175,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 </p>
                 <Link
                   href="/products"
-                  className="inline-flex items-center px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold rounded-xl"
+                  className="inline-flex items-center px-4 py-2 bg-[#006543] hover:bg-[#055b38] text-white text-xs font-semibold rounded-xl"
                 >
                   Xem tất cả thiết bị
                 </Link>

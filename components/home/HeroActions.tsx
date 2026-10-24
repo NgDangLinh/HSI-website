@@ -13,7 +13,7 @@ export default function HeroActions() {
     <div className="flex flex-wrap items-center gap-4 pt-2">
       <Link
         href="/products"
-        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 transition-all hover:scale-[1.02]"
+        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-[#006543] hover:bg-[#055b38] text-white shadow-lg shadow-emerald-950/30 transition-all hover:scale-[1.02]"
       >
         <span>Khám Phá Thiết Bị Y Tế</span>
         <ArrowRight className="w-4 h-4" />
@@ -23,7 +23,7 @@ export default function HeroActions() {
         onClick={() => openConsultation()}
         className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-white/10 hover:bg-white/15 text-white border border-white/20 backdrop-blur-sm transition-all"
       >
-        <FileCheck className="w-4 h-4 text-cyan-300" />
+        <FileCheck className="w-4 h-4 text-emerald-300" />
         <span>Yêu Cầu Tư Vấn Dự Án</span>
       </button>
 
@@ -31,7 +31,7 @@ export default function HeroActions() {
         href={`tel:${COMPANY_INFO.hotline.replace(/\s+/g, '')}`}
         className="inline-flex items-center gap-2 px-4 py-3.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
       >
-        <PhoneCall className="w-4 h-4 text-cyan-400" />
+        <PhoneCall className="w-4 h-4 text-emerald-400" />
         <span>Hotline: {COMPANY_INFO.hotline}</span>
       </a>
     </div>
