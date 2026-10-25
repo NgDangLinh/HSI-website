@@ -14,26 +14,27 @@ import {
 } from 'lucide-react';
 import { COMPANY_INFO } from '@/lib/data/companyInfo';
 import { useConsultation } from '@/components/common/ConsultationProvider';
-
-const NAV_ITEMS = [
-  { label: 'TRANG CHỦ', href: '/' },
-  { label: 'GIỚI THIỆU', href: '/about' },
-  { label: 'ĐỐI TÁC', href: '/partners' },
-  { label: 'SẢN PHẨM', href: '/products' },
-  { label: 'TUYỂN DỤNG', href: '/careers' },
-  { label: 'TRUYỀN THÔNG', href: '/news' },
-  { label: 'LIÊN HỆ', href: '/contact' },
-];
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { openConsultation } = useConsultation();
+  const { language, setLanguage, dict } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentLang, setCurrentLang] = useState<'vi' | 'en'>('vi');
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const navItems = [
+    { label: dict.nav.home, href: '/' },
+    { label: dict.nav.about, href: '/about' },
+    { label: dict.nav.partners, href: '/partners' },
+    { label: dict.nav.products, href: '/products' },
+    { label: dict.nav.careers, href: '/careers' },
+    { label: dict.nav.news, href: '/news' },
+    { label: dict.nav.contact, href: '/contact' },
+  ];
 
   // Focus search input when search is opened
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function Header() {
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Hotline Kỹ Thuật: <strong className="text-white">{COMPANY_INFO.hotline}</strong></span>
+              <span>{dict.nav.techHotline} <strong className="text-white">{COMPANY_INFO.hotline}</strong></span>
             </a>
             <a
               href={`mailto:${COMPANY_INFO.email}`}
@@ -82,11 +83,11 @@ export default function Header() {
           {/* National branches indicator */}
           <div className="flex items-center gap-2 text-[11px] text-slate-400">
             <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-            <span>4 Chi nhánh:</span>
-            <span className="text-slate-200">Hà Nội</span> •
-            <span className="text-slate-200">TP. Hồ Chí Minh</span> •
-            <span className="text-slate-200">Đà Nẵng</span> •
-            <span className="text-slate-200">Cần Thơ</span>
+            <span>{dict.nav.branchesCount}</span>
+            <span className="text-slate-200">{language === 'en' ? 'Hanoi' : 'Hà Nội'}</span> •
+            <span className="text-slate-200">{language === 'en' ? 'Ho Chi Minh City' : 'TP. Hồ Chí Minh'}</span> •
+            <span className="text-slate-200">{language === 'en' ? 'Da Nang' : 'Đà Nẵng'}</span> •
+            <span className="text-slate-200">{language === 'en' ? 'Can Tho' : 'Cần Thơ'}</span>
           </div>
         </div>
       </div>
@@ -105,9 +106,9 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop Nav Links (In hoa chuẩn HSI Corp) */}
+        {/* Desktop Nav Links (Dynamic bilingual labels) */}
         <nav className="hidden xl:flex items-center gap-6 lg:gap-7 text-[13px] font-bold tracking-wide">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
@@ -127,7 +128,7 @@ export default function Header() {
 
         {/* Medium screens (lg to xl) */}
         <nav className="hidden lg:flex xl:hidden items-center gap-4 text-xs font-bold tracking-wide">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
@@ -150,12 +151,13 @@ export default function Header() {
           {/* Language flags */}
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
             <button
-              onClick={() => setCurrentLang('en')}
+              onClick={() => setLanguage('en')}
               title="English"
-              className={`p-0.5 rounded transition-all ${
-                currentLang === 'en'
-                  ? 'ring-2 ring-[#006543] opacity-100 scale-105'
-                  : 'opacity-70 hover:opacity-100'
+              aria-label="Switch to English"
+              className={`p-0.5 rounded transition-all cursor-pointer ${
+                language === 'en'
+                  ? 'ring-2 ring-[#006543] opacity-100 scale-105 shadow-sm'
+                  : 'opacity-60 hover:opacity-100'
               }`}
             >
               <Image
@@ -167,12 +169,13 @@ export default function Header() {
               />
             </button>
             <button
-              onClick={() => setCurrentLang('vi')}
+              onClick={() => setLanguage('vi')}
               title="Tiếng Việt"
-              className={`p-0.5 rounded transition-all ${
-                currentLang === 'vi'
-                  ? 'ring-2 ring-[#006543] opacity-100 scale-105'
-                  : 'opacity-70 hover:opacity-100'
+              aria-label="Chuyển sang Tiếng Việt"
+              className={`p-0.5 rounded transition-all cursor-pointer ${
+                language === 'vi'
+                  ? 'ring-2 ring-[#006543] opacity-100 scale-105 shadow-sm'
+                  : 'opacity-60 hover:opacity-100'
               }`}
             >
               <Image
@@ -188,7 +191,7 @@ export default function Header() {
           {/* Minimalist Search Icon */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className={`p-2 rounded-full transition-colors ${
+            className={`p-2 rounded-full transition-colors cursor-pointer ${
               searchOpen
                 ? 'bg-emerald-50 text-[#006543]'
                 : 'text-slate-600 hover:text-[#006543] hover:bg-slate-100'
@@ -205,14 +208,16 @@ export default function Header() {
           {/* Language flags on mobile */}
           <div className="flex items-center gap-1.5 mr-1">
             <button
-              onClick={() => setCurrentLang('vi')}
-              className={`p-0.5 rounded ${currentLang === 'vi' ? 'ring-1 ring-[#006543]' : 'opacity-70'}`}
+              onClick={() => setLanguage('vi')}
+              title="Tiếng Việt"
+              className={`p-0.5 rounded transition-all ${language === 'vi' ? 'ring-2 ring-[#006543] opacity-100' : 'opacity-60'}`}
             >
               <Image src="/images/flags/vi.png" alt="VI" width={18} height={12} className="w-4 h-auto" />
             </button>
             <button
-              onClick={() => setCurrentLang('en')}
-              className={`p-0.5 rounded ${currentLang === 'en' ? 'ring-1 ring-[#006543]' : 'opacity-70'}`}
+              onClick={() => setLanguage('en')}
+              title="English"
+              className={`p-0.5 rounded transition-all ${language === 'en' ? 'ring-2 ring-[#006543] opacity-100' : 'opacity-60'}`}
             >
               <Image src="/images/flags/en.png" alt="EN" width={18} height={12} className="w-4 h-auto" />
             </button>
@@ -222,7 +227,7 @@ export default function Header() {
             onClick={() => openConsultation()}
             className="sm:hidden py-1.5 px-3 rounded-full text-xs font-bold text-white bg-[#006543] hover:bg-[#055b38]"
           >
-            Tư Vấn
+            {dict.nav.consultBtn}
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -243,7 +248,7 @@ export default function Header() {
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Nhập tên thiết bị y tế, mã model (ví dụ: Surtex, EPK-i8020c, Stent, Suncream...)"
+                  placeholder={dict.nav.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm bg-white text-slate-900 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] shadow-inner"
@@ -261,9 +266,9 @@ export default function Header() {
               </div>
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-[#006543] hover:bg-[#055b38] text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm"
+                className="px-5 py-2.5 bg-[#006543] hover:bg-[#055b38] text-white text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-sm cursor-pointer"
               >
-                Tìm Kiếm
+                {dict.nav.searchBtn}
               </button>
             </form>
           </div>
@@ -276,7 +281,7 @@ export default function Header() {
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
-              placeholder="Tìm kiếm thiết bị y tế, mã model..."
+              placeholder={dict.nav.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2.5 text-sm bg-slate-100 text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#006543]"
@@ -285,7 +290,7 @@ export default function Header() {
           </form>
 
           <nav className="flex flex-col space-y-1 text-[13px] font-bold tracking-wide text-slate-800">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
@@ -310,9 +315,9 @@ export default function Header() {
                 setMobileMenuOpen(false);
                 openConsultation();
               }}
-              className="w-full py-3 bg-[#006543] hover:bg-[#055b38] text-white font-bold rounded-xl text-center text-sm shadow-md"
+              className="w-full py-3 bg-[#006543] hover:bg-[#055b38] text-white font-bold rounded-xl text-center text-sm shadow-md cursor-pointer"
             >
-              Yêu Cầu Tư Vấn & Báo Giá
+              {dict.home.bottomCtaBtn}
             </button>
           </div>
         </div>

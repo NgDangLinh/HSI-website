@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Send, CheckCircle2, Phone, Building, User, Mail, FileText } from 'lucide-react';
 import { COMPANY_INFO } from '@/lib/data/companyInfo';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function ConsultationModal({
   productName,
   sku,
 }: ConsultationModalProps) {
+  const { dict } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -50,14 +52,14 @@ export default function ConsultationModal({
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-[#003825] via-[#005237] to-[#006543] px-6 py-5 text-white flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-bold">Yêu Cầu Tư Vấn Kỹ Thuật & Báo Giá</h3>
+            <h3 className="text-xl font-bold">{dict.consultation.modalTitle}</h3>
             <p className="text-emerald-100 text-xs mt-1">
-              Chuyên viên y sinh HSI Corp sẽ phản hồi trong vòng 15-30 phút
+              {dict.consultation.modalSubtitle}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-full text-emerald-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1 rounded-full text-emerald-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -68,10 +70,14 @@ export default function ConsultationModal({
           {productName && (
             <div className="mb-5 p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-xl">
               <span className="text-xs font-semibold uppercase tracking-wider text-[#006543] block mb-0.5">
-                Thiết bị quan tâm:
+                {dict.consultation.interestedDevice}
               </span>
               <p className="text-sm font-bold text-[#003825] line-clamp-1">{productName}</p>
-              {sku && <p className="text-xs text-slate-500 mt-0.5">Mã thiết bị / Model: <span className="font-mono text-[#006543]">{sku}</span></p>}
+              {sku && (
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {dict.consultation.modelSku} <span className="font-mono text-[#006543]">{sku}</span>
+                </p>
+              )}
             </div>
           )}
 
@@ -80,22 +86,22 @@ export default function ConsultationModal({
               <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-9 h-9" />
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-2">Đã Gửi Yêu Cầu Thành Công!</h4>
+              <h4 className="text-xl font-bold text-slate-900 mb-2">{dict.consultation.successTitle}</h4>
               <p className="text-sm text-slate-600 max-w-sm mx-auto mb-6">
-                Cảm ơn Quý đơn vị đã quan tâm đến giải pháp thiết bị y tế của HSI Corp. Chuyên viên kỹ thuật phụ trách khu vực sẽ sớm liên hệ trực tiếp.
+                {dict.consultation.successDesc}
               </p>
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left mb-6">
-                <p className="text-xs text-slate-500 mb-1 font-medium">Hỗ trợ khẩn cấp 24/7:</p>
+                <p className="text-xs text-slate-500 mb-1 font-medium">{dict.consultation.emergencySupport}</p>
                 <div className="flex items-center gap-2 text-[#006543] font-bold text-sm">
                   <Phone className="w-4 h-4 text-emerald-600" />
-                  <span>Hotline Dự Án: {COMPANY_INFO.hotline}</span>
+                  <span>{dict.consultation.projectHotline} {COMPANY_INFO.hotline}</span>
                 </div>
               </div>
               <button
                 onClick={handleReset}
-                className="w-full py-2.5 px-4 bg-[#006543] hover:bg-[#055b38] text-white font-medium rounded-xl transition-colors shadow-sm"
+                className="w-full py-2.5 px-4 bg-[#006543] hover:bg-[#055b38] text-white font-medium rounded-xl transition-colors shadow-sm cursor-pointer"
               >
-                Đóng thông báo
+                {dict.consultation.close}
               </button>
             </div>
           ) : (
@@ -103,12 +109,12 @@ export default function ConsultationModal({
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-[#006543]" />
-                  Họ tên người đại diện <span className="text-rose-500">*</span>
+                  {dict.consultation.fullName} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ví dụ: Bác sĩ Nguyễn Văn A / Trưởng khoa..."
+                  placeholder={dict.consultation.fullNamePlaceholder}
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] text-slate-900 transition-all placeholder:text-slate-400"
@@ -119,12 +125,12 @@ export default function ConsultationModal({
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-[#006543]" />
-                    Số điện thoại liên hệ <span className="text-rose-500">*</span>
+                    {dict.consultation.phone} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="0912 345 678"
+                    placeholder={dict.consultation.phonePlaceholder}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] text-slate-900 transition-all placeholder:text-slate-400"
@@ -133,11 +139,11 @@ export default function ConsultationModal({
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
                     <Mail className="w-3.5 h-3.5 text-[#006543]" />
-                    Email nhận tài liệu
+                    {dict.consultation.email}
                   </label>
                   <input
                     type="email"
-                    placeholder="email@benhvien.vn"
+                    placeholder={dict.consultation.emailPlaceholder}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] text-slate-900 transition-all placeholder:text-slate-400"
@@ -148,12 +154,12 @@ export default function ConsultationModal({
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
                   <Building className="w-3.5 h-3.5 text-[#006543]" />
-                  Bệnh viện / Phòng khám / Đơn vị <span className="text-rose-500">*</span>
+                  {dict.consultation.organization} <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Ví dụ: Bệnh viện Đa khoa Tỉnh / Phòng khám..."
+                  placeholder={dict.consultation.organizationPlaceholder}
                   value={formData.organization}
                   onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] text-slate-900 transition-all placeholder:text-slate-400"
@@ -163,11 +169,11 @@ export default function ConsultationModal({
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-[#006543]" />
-                  Nhu cầu chi tiết (Báo giá dự án, Thông số máy, Đào tạo...)
+                  {dict.consultation.notes}
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Quý đơn vị cần tài liệu kỹ thuật, đề xuất cấu hình máy hoặc tư vấn phương án thuê/mua thiết bị..."
+                  placeholder={dict.consultation.notesPlaceholder}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#006543]/20 focus:border-[#006543] text-slate-900 transition-all placeholder:text-slate-400 resize-none"
@@ -178,20 +184,11 @@ export default function ConsultationModal({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-[#003825] via-[#005237] to-[#006543] hover:from-blue-800 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full py-3 px-4 bg-[#006543] hover:bg-[#055b38] disabled:bg-slate-400 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  {isSubmitting ? (
-                    <span className="inline-block animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      Gửi Yêu Cầu Tư Vấn Ngay
-                    </>
-                  )}
+                  <Send className="w-4 h-4" />
+                  <span>{isSubmitting ? dict.consultation.submitting : dict.consultation.submit}</span>
                 </button>
-                <p className="text-[11px] text-center text-slate-500 mt-2">
-                  * Thông tin bảo mật 100%, chỉ sử dụng cho mục đích tư vấn kỹ thuật y tế.
-                </p>
               </div>
             </form>
           )}
@@ -200,4 +197,3 @@ export default function ConsultationModal({
     </div>
   );
 }
-

@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ConsultationProvider } from "@/components/common/ConsultationProvider";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 export const metadata: Metadata = {
   title: "HSI Corp | Giải Pháp Đầu Tư & Phân Phối Thiết Bị Y Tế Toàn Diện",
@@ -26,12 +27,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className="h-full antialiased scroll-smooth">
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800 font-sans selection:bg-blue-900 selection:text-white">
-        <ConsultationProvider>
-          <Header />
-          <div className="flex-1 flex flex-col">{children}</div>
-          <Footer />
-        </ConsultationProvider>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800 font-sans selection:bg-[#006543] selection:text-white">
+        <LanguageProvider>
+          <ConsultationProvider>
+            <Header />
+            <div className="flex-1 flex flex-col">{children}</div>
+            <Footer />
+          </ConsultationProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

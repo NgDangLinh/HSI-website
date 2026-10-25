@@ -1,10 +1,15 @@
+'use client';
+
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
 import { COMPANY_INFO, BRANCHES } from '@/lib/data/companyInfo';
-import { Phone, Mail, Stethoscope, ShieldCheck, Award, Clock } from 'lucide-react';
+import { Phone, Mail, ShieldCheck, Award, Clock } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function Footer() {
+  const { language, dict } = useLanguage();
+
   return (
     <footer className="bg-slate-950 text-slate-400 text-sm border-t border-slate-900">
       {/* Upper Footer: Value Proposition / Trust Strip */}
@@ -15,8 +20,8 @@ export default function Footer() {
               <Award className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">15+ Năm Kinh Nghiệm Y Tế</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Tiên phong xã hội hóa & đầu tư trang thiết bị bệnh viện từ năm 2010.</p>
+              <h4 className="text-white font-bold text-sm">{dict.footer.expTitle}</h4>
+              <p className="text-xs text-slate-400 mt-0.5">{dict.footer.expDesc}</p>
             </div>
           </div>
 
@@ -25,8 +30,8 @@ export default function Footer() {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Thiết Bị Chính Hãng 100%</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Đầy đủ chứng chỉ xuất xứ CO/CQ, đạt tiêu chuẩn CE, FDA, ISO 13485.</p>
+              <h4 className="text-white font-bold text-sm">{dict.footer.genuineTitle}</h4>
+              <p className="text-xs text-slate-400 mt-0.5">{dict.footer.genuineDesc}</p>
             </div>
           </div>
 
@@ -35,8 +40,8 @@ export default function Footer() {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Kỹ Sư Y Sinh Hỗ Trợ 24/7</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Mạng lưới kỹ thuật tại 4 chi nhánh sẵn sàng ứng cứu và bảo trì thiết bị.</p>
+              <h4 className="text-white font-bold text-sm">{dict.footer.supportTitle}</h4>
+              <p className="text-xs text-slate-400 mt-0.5">{dict.footer.supportDesc}</p>
             </div>
           </div>
         </div>
@@ -58,7 +63,9 @@ export default function Footer() {
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              {COMPANY_INFO.description}
+              {language === 'en'
+                ? 'Established in 2010, HSI Corp is a pioneer in healthcare investment consulting, hospital socialization, and authorized distribution of international-standard medical devices across Vietnam.'
+                : COMPANY_INFO.description}
             </p>
 
             <div className="pt-2 space-y-2 text-xs">
@@ -75,36 +82,41 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-bold text-sm tracking-wide">Khám Phá</h4>
+            <h4 className="text-white font-bold text-sm tracking-wide">{dict.footer.explore}</h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/" className="hover:text-emerald-400 transition-colors">
-                  Trang chủ
+                  {dict.nav.home}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-emerald-400 transition-colors">
-                  Về HSI Corp
+                  {dict.nav.about}
+                </Link>
+              </li>
+              <li>
+                <Link href="/partners" className="hover:text-emerald-400 transition-colors">
+                  {dict.nav.partners}
                 </Link>
               </li>
               <li>
                 <Link href="/products" className="hover:text-emerald-400 transition-colors">
-                  Danh mục thiết bị
+                  {dict.nav.products}
                 </Link>
               </li>
               <li>
                 <Link href="/solutions" className="hover:text-emerald-400 transition-colors">
-                  Giải pháp đầu tư y tế
+                  {language === 'en' ? 'Investment Solutions' : 'Giải pháp đầu tư y tế'}
                 </Link>
               </li>
               <li>
                 <Link href="/news" className="hover:text-emerald-400 transition-colors">
-                  Tin tức & Chuyển giao
+                  {dict.nav.news}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-emerald-400 transition-colors">
-                  Liên hệ báo giá
+                  {dict.nav.contact}
                 </Link>
               </li>
             </ul>
@@ -112,26 +124,28 @@ export default function Footer() {
 
           {/* Product Categories */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-bold text-sm tracking-wide">Dòng Thiết Bị</h4>
+            <h4 className="text-white font-bold text-sm tracking-wide">
+              {language === 'en' ? 'Clinical Focus' : 'Dòng Thiết Bị'}
+            </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/products?category=noi-soi-can-thiep-tieu-hoa" className="hover:text-emerald-400 transition-colors">
-                  Nội soi can thiệp & ERCP
+                  {language === 'en' ? 'Interventional Endoscopy & ERCP' : 'Nội soi can thiệp & ERCP'}
                 </Link>
               </li>
               <li>
                 <Link href="/products?category=chan-thuong-chinh-hinh" className="hover:text-emerald-400 transition-colors">
-                  Chấn thương chỉnh hình
+                  {language === 'en' ? 'Orthopedics & Spine' : 'Chấn thương chỉnh hình'}
                 </Link>
               </li>
               <li>
                 <Link href="/products?category=dung-cu-phau-thuat-surtex" className="hover:text-emerald-400 transition-colors">
-                  Dụng cụ phẫu thuật Surtex
+                  {language === 'en' ? 'Surtex Surgical Instruments' : 'Dụng cụ phẫu thuật Surtex'}
                 </Link>
               </li>
               <li>
                 <Link href="/products?category=duoc-my-pham" className="hover:text-emerald-400 transition-colors">
-                  Dược Mỹ Phẩm Cell Fusion C
+                  {language === 'en' ? 'Cell Fusion C Dermocosmetics' : 'Dược Mỹ Phẩm Cell Fusion C'}
                 </Link>
               </li>
             </ul>
@@ -139,7 +153,7 @@ export default function Footer() {
 
           {/* Branches & Offices */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="text-white font-bold text-sm tracking-wide">Hệ Thống 4 Chi Nhánh</h4>
+            <h4 className="text-white font-bold text-sm tracking-wide">{dict.footer.branches}</h4>
             <div className="space-y-3 text-xs">
               {BRANCHES.map((branch, index) => (
                 <div key={index} className="border-l-2 border-emerald-500/50 pl-3">
@@ -160,11 +174,14 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-slate-900 bg-black/60 py-4 px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© 2026 {COMPANY_INFO.name}. Toàn quyền bảo lưu.</p>
-          <p className="text-[11px]">Cổng thông tin & Trưng bày thiết bị y tế B2B (Headless Next.js Catalog).</p>
+          <p>© 2026 {COMPANY_INFO.name}. {dict.footer.copyright}</p>
+          <p className="text-[11px]">
+            {language === 'en'
+              ? 'B2B Medical Equipment Portal (Headless Next.js).'
+              : 'Cổng thông tin & Trưng bày thiết bị y tế B2B (Headless Next.js Catalog).'}
+          </p>
         </div>
       </div>
     </footer>
   );
 }
-
