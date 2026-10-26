@@ -242,17 +242,83 @@ function mapWooStoreProductToMedicalProduct(item: WooStoreRawProduct): MedicalPr
   };
 }
 
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
+}
+
+export async function getPaginatedProducts(options?: {
+  category?: string;
+  search?: string;
+  page?: number;
+  perPage?: number;
+}): Promise<PaginatedResult<MedicalProduct>> {
+  const { category, search, page = 1, perPage = 6 } = options || {};
+
+  let allProducts: MedicalProduct[] = [];
+  if (cachedProducts) {
+    allProducts = cachedProducts;
+  } else {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+      const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products?per_page=100`, {
+        headers: COMMON_HEADERS,
+        signal: controller.signal,
+        next: { revalidate: 60 },
+      });
+
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
+          cachedProducts = mapped;
+          allProducts = mapped;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+
+    if (allProducts.length === 0) {
+      allProducts = MOCK_PRODUCTS;
+    }
+  }
+
+  const filtered = filterProductsList(allProducts, category, search);
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const validPage = Math.max(1, Math.min(page, totalPages));
+  const startIndex = (validPage - 1) * perPage;
+  const data = filtered.slice(startIndex, startIndex + perPage);
+
+  return {
+    data,
+    total,
+    totalPages,
+    currentPage: validPage,
+    perPage,
+  };
+}
+
 export async function getProducts(options?: {
   category?: string;
   search?: string;
   perPage?: number;
   page?: number;
 }): Promise<MedicalProduct[]> {
-  const { category, search, perPage = 24 } = options || {};
+  const { category, search, perPage = 24, page = 1 } = options || {};
+  const startIndex = (page - 1) * perPage;
 
   // If already fetched and cached products, use cache
   if (cachedProducts && !search && !category) {
-    return cachedProducts.slice(0, perPage);
+    return cachedProducts.slice(startIndex, startIndex + perPage);
   }
 
   try {
@@ -272,14 +338,14 @@ export async function getProducts(options?: {
       if (Array.isArray(data) && data.length > 0) {
         const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
         cachedProducts = mapped;
-        return filterProductsList(mapped, category, search).slice(0, perPage);
+        return filterProductsList(mapped, category, search).slice(startIndex, startIndex + perPage);
       }
     }
   } catch {
     // Graceful fallback to static data
   }
 
-  return filterProductsList(MOCK_PRODUCTS, category, search).slice(0, perPage);
+  return filterProductsList(MOCK_PRODUCTS, category, search).slice(startIndex, startIndex + perPage);
 }
 
 export async function getProductById(id: number | string): Promise<MedicalProduct | null> {

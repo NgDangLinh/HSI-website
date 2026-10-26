@@ -1,13 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { getProducts, getProductCategories } from '@/lib/api/products';
+import { getPaginatedProducts, getProductCategories } from '@/lib/api/products';
 import ProductCard from '@/components/product/ProductCard';
+import Pagination from '@/components/product/Pagination';
 import { Search, Filter, Layers, X, Sparkles, ChevronRight } from 'lucide-react';
 
 interface ProductsPageProps {
   searchParams: Promise<{
     category?: string;
     search?: string;
+    page?: string;
   }>;
 }
 
@@ -15,17 +17,23 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const resolvedParams = await searchParams;
   const currentCategory = resolvedParams.category || '';
   const currentSearch = resolvedParams.search || '';
+  const currentPage = Math.max(1, parseInt(resolvedParams.page || '1', 10) || 1);
 
-  const [products, categories] = await Promise.all([
-    getProducts({
+  const [paginatedResult, categories] = await Promise.all([
+    getPaginatedProducts({
       category: currentCategory,
       search: currentSearch,
-      perPage: 100,
+      page: currentPage,
+      perPage: 6,
     }),
     getProductCategories(),
   ]);
 
+  const { data: products, total, totalPages } = paginatedResult;
   const activeCategoryObj = categories.find((c) => c.slug === currentCategory);
+
+  const startItem = total > 0 ? (currentPage - 1) * 6 + 1 : 0;
+  const endItem = Math.min(currentPage * 6, total);
 
   return (
     <main className="min-h-screen bg-slate-50 py-10">
@@ -59,7 +67,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
             {/* Total items badge */}
             <div className="text-xs font-semibold text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-sm shrink-0">
-              Hiển thị: <strong className="text-[#006543]">{products.length}</strong> thiết bị
+              Hiển thị:{' '}
+              <strong className="text-[#006543]">
+                {startItem} - {endItem}
+              </strong>{' '}
+              trên <strong className="text-[#006543]">{total}</strong> thiết bị{' '}
+              {totalPages > 1 && (
+                <span className="text-slate-400 font-normal ml-1">
+                  (Trang {currentPage}/{totalPages})
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -157,12 +174,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           </aside>
 
           {/* Product Grid */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 flex flex-col justify-between">
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {products.map((item) => (
-                  <ProductCard key={item.id} product={item} />
-                ))}
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {products.map((item) => (
+                    <ProductCard key={item.id} product={item} />
+                  ))}
+                </div>
+
+                {/* Pagination component */}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  category={currentCategory}
+                  search={currentSearch}
+                />
               </div>
             ) : (
               <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
@@ -187,4 +214,3 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     </main>
   );
 }
-
