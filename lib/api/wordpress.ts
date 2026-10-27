@@ -13,8 +13,10 @@ interface WpRawPost {
   excerpt?: { rendered?: string };
   content?: { rendered?: string };
   date: string;
+  categories?: number[];
   _embedded?: {
     'wp:featuredmedia'?: WpRawFeaturedMedia[];
+    author?: Array<{ name?: string }>;
   };
 }
 
@@ -26,14 +28,49 @@ const COMMON_HEADERS = {
   Accept: 'application/json',
 };
 
-export async function getPosts(perPage = 6): Promise<NewsPost[]> {
+function cleanHtmlText(text?: string): string {
+  if (!text) return '';
+  return text
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&#8211;/g, '–')
+    .replace(/&#8212;/g, '—')
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&quot;/g, '"')
+    .replace(/&#038;/g, '&')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\[&#8230;\]/g, '...')
+    .replace(/\[\.\.\.\]/g, '...')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function formatDate(isoString: string): string {
+  if (!isoString) return '';
+  try {
+    const d = new Date(isoString);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return isoString;
+  }
+}
+
+export async function getPosts(perPage = 10): Promise<NewsPost[]> {
   if (cachedPosts) return cachedPosts.slice(0, perPage);
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-    const res = await fetch(`${WP_URL}/wp-json/wp/v2/posts?_embed&per_page=${perPage}`, {
+    // Fetch specifically category 45 ("Truyền thông")
+    const res = await fetch(`${WP_URL}/wp-json/wp/v2/posts?categories=45&_embed&per_page=${perPage}`, {
       headers: COMMON_HEADERS,
       signal: controller.signal,
       next: { revalidate: 300 },
@@ -45,39 +82,55 @@ export async function getPosts(perPage = 6): Promise<NewsPost[]> {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         cachedPosts = (data as WpRawPost[]).map((item) => {
-          let imageUrl = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80';
+          const imageUrl = `/images/posts/post-${item.id}.jpg`;
+          let remoteImageUrl = '';
           if (
             item._embedded &&
             item._embedded['wp:featuredmedia'] &&
             item._embedded['wp:featuredmedia'][0]
           ) {
-            imageUrl = item._embedded['wp:featuredmedia'][0].source_url || imageUrl;
+            remoteImageUrl = item._embedded['wp:featuredmedia'][0].source_url || '';
           }
+
+          const author = item._embedded?.author?.[0]?.name || 'Ban Truyền Thông HSI';
 
           return {
             id: item.id,
-            title: item.title?.rendered || 'Tin tức HSI Corp',
+            title: cleanHtmlText(item.title?.rendered) || 'Truyền thông HSI Corp',
             slug: item.slug || `post-${item.id}`,
-            excerpt: item.excerpt?.rendered?.replace(/<[^>]*>?/gm, '').trim() || '',
+            excerpt: cleanHtmlText(item.excerpt?.rendered) || '',
             content: item.content?.rendered || '',
-            date: new Date(item.date).toLocaleDateString('vi-VN'),
-            category: 'Tin tức & Hoạt động',
-            imageUrl,
-            author: 'HSI Corp',
+            date: formatDate(item.date),
+            category: 'Truyền thông',
+            imageUrl: imageUrl || remoteImageUrl || '/images/products/Surtex-Set.jpg',
+            remoteImageUrl,
+            author,
           };
         });
-        return cachedPosts;
+        return cachedPosts.slice(0, perPage);
       }
     }
   } catch {
-    // Graceful fallback
+    // Graceful fallback to MOCK_POSTS (which contains all 5 authentic posts)
   }
 
-  return MOCK_POSTS;
+  return MOCK_POSTS.slice(0, perPage);
 }
 
 export async function getPostByIdOrSlug(idOrSlug: string | number): Promise<NewsPost | null> {
-  const posts = await getPosts(10);
-  const found = posts.find((p) => p.id === Number(idOrSlug) || p.slug === idOrSlug);
-  return found || MOCK_POSTS[0];
+  const posts = await getPosts(100);
+  const numId = Number(idOrSlug);
+
+  const found = posts.find((p) => (!isNaN(numId) && p.id === numId) || p.slug === idOrSlug);
+  if (found) return found;
+
+  const foundMock = MOCK_POSTS.find((p) => (!isNaN(numId) && p.id === numId) || p.slug === idOrSlug);
+  return foundMock || null;
 }
+
+export async function getAllPostSlugs(): Promise<string[]> {
+  const posts = await getPosts(100);
+  return posts.map((p) => p.slug);
+}
+
+export type { NewsPost };

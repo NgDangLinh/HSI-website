@@ -11,30 +11,34 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('vi');
+function getInitialLanguage(): Language {
+  if (typeof window === 'undefined') return 'vi';
+  try {
+    const savedLang = localStorage.getItem('hsi_lang') as Language | null;
+    if (savedLang === 'vi' || savedLang === 'en') {
+      return savedLang;
+    }
 
-  // Load language preference from localStorage / cookie on client mount
+    const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]*)/);
+    if (match && (match[1] === 'vi' || match[1] === 'en')) {
+      return match[1] as Language;
+    }
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+  return 'vi';
+}
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+
   useEffect(() => {
     try {
-      const savedLang = localStorage.getItem('hsi_lang') as Language | null;
-      if (savedLang === 'vi' || savedLang === 'en') {
-        setLanguageState(savedLang);
-        document.documentElement.lang = savedLang;
-        return;
-      }
-
-      // Check cookie NEXT_LOCALE
-      const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]*)/);
-      if (match && (match[1] === 'vi' || match[1] === 'en')) {
-        const cookieLang = match[1] as Language;
-        setLanguageState(cookieLang);
-        document.documentElement.lang = cookieLang;
-      }
+      document.documentElement.lang = language;
     } catch {
-      // Ignore storage errors in restricted contexts
+      // Ignore DOM errors
     }
-  }, []);
+  }, [language]);
 
   const setLanguage = (newLang: Language) => {
     setLanguageState(newLang);
@@ -63,4 +67,3 @@ export function useLanguage(): LanguageContextType {
   }
   return context;
 }
-

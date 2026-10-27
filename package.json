@@ -7,7 +7,9 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "sync:wp": "node scripts/sync-wp.mjs"
+    "sync:wp": "node scripts/sync-wp.mjs",
+    "sync:posts": "node scripts/sync-posts.mjs",
+    "sync:all": "npm run sync:wp && npm run sync:posts"
   },
   "dependencies": {
     "lucide-react": "^1.61.0",
