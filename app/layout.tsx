@@ -6,6 +6,7 @@ import { ConsultationProvider } from "@/components/common/ConsultationProvider";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://hsicorp.com.vn'),
   title: "HSI Corp | Giải Pháp Đầu Tư & Phân Phối Thiết Bị Y Tế Toàn Diện",
   description:
     "Cổng thông tin & giới thiệu thiết bị y tế công nghệ cao HSI Corp. Chuyên tư vấn giải pháp tài chính y tế, xã hội hóa bệnh viện và cung ứng trang thiết bị y sinh chính hãng trên toàn quốc.",
