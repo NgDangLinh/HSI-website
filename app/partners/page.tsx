@@ -5,10 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ChevronRight,
-  Award,
-  ShieldCheck,
   Globe2,
-  Building2,
   CheckCircle2,
   ArrowRight,
 } from 'lucide-react';
@@ -125,38 +122,6 @@ export default function PartnersPage() {
           </div>
         </div>
 
-        {/* Value Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm mb-1">{dict.partners.trust1Title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{dict.partners.trust1Desc}</p>
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center shrink-0">
-              <Award className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm mb-1">{dict.partners.trust2Title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{dict.partners.trust2Desc}</p>
-            </div>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center shrink-0">
-              <Building2 className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-sm mb-1">{dict.partners.trust3Title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{dict.partners.trust3Desc}</p>
-            </div>
-          </div>
-        </div>
 
         {/* Partners Grid */}
         <div className="mb-16">
@@ -223,16 +188,11 @@ export default function PartnersPage() {
 
                   <div className="pt-6 border-t border-slate-100 mt-6 flex items-center justify-between">
                     <Link
-                      href="/products"
+                      href={`/products?brand=${encodeURIComponent(p.name)}`}
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-[#006543] hover:text-[#055b38] transition-colors"
                     >
                       {dict.partners.viewProducts} <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
-                    <ConsultationButton
-                      label={dict.partners.consultConfig}
-                      variant="outline"
-                      className="py-1.5 px-3 text-xs"
-                    />
                   </div>
                 </div>
               );

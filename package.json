@@ -9,7 +9,8 @@
     "lint": "eslint",
     "sync:wp": "node scripts/sync-wp.mjs",
     "sync:posts": "node scripts/sync-posts.mjs",
-    "sync:all": "npm run sync:wp && npm run sync:posts"
+    "sync:supplies": "node scripts/sync-supplies.mjs",
+    "sync:all": "npm run sync:wp && npm run sync:posts && npm run sync:supplies"
   },
   "dependencies": {
     "lucide-react": "^1.61.0",

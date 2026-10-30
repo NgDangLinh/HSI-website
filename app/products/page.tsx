@@ -3,12 +3,25 @@ import Link from 'next/link';
 import { getPaginatedProducts, getProductCategories } from '@/lib/api/products';
 import ProductCard from '@/components/product/ProductCard';
 import Pagination from '@/components/product/Pagination';
-import { Search, Filter, Layers, X, Sparkles, ChevronRight } from 'lucide-react';
+import ConsultationButton from '@/components/common/ConsultationButton';
+import {
+  Search,
+  Filter,
+  Layers,
+  X,
+  Sparkles,
+  ChevronRight,
+  Clock,
+  Phone,
+  ShieldCheck,
+  ArrowRight,
+} from 'lucide-react';
 
 interface ProductsPageProps {
   searchParams: Promise<{
     category?: string;
     search?: string;
+    brand?: string;
     page?: string;
   }>;
 }
@@ -17,12 +30,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const resolvedParams = await searchParams;
   const currentCategory = resolvedParams.category || '';
   const currentSearch = resolvedParams.search || '';
+  const currentBrand = resolvedParams.brand || '';
   const currentPage = Math.max(1, parseInt(resolvedParams.page || '1', 10) || 1);
 
   const [paginatedResult, categories] = await Promise.all([
     getPaginatedProducts({
       category: currentCategory,
       search: currentSearch,
+      brand: currentBrand,
       page: currentPage,
       perPage: 6,
     }),
@@ -35,20 +50,37 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const startItem = total > 0 ? (currentPage - 1) * 6 + 1 : 0;
   const endItem = Math.min(currentPage * 6, total);
 
+  const buildCategoryUrl = (catSlug?: string) => {
+    const p = new URLSearchParams();
+    if (catSlug) p.set('category', catSlug);
+    if (currentBrand) p.set('brand', currentBrand);
+    if (currentSearch) p.set('search', currentSearch);
+    const qs = p.toString();
+    return qs ? `/products?${qs}` : '/products';
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb & Title */}
         <div className="mb-8">
           <nav className="flex items-center gap-2 text-xs text-slate-500 mb-3">
-            <Link href="/" className="hover:text-[#006543]">
+            <Link href="/" className="hover:text-[#006543] transition-colors">
               Trang chủ
             </Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="font-semibold text-slate-900">Thiết bị y tế</span>
+            <ChevronRight className="w-3 h-3 text-slate-400" />
+            <Link href="/products" className="hover:text-[#006543] transition-colors">
+              Thiết bị y tế
+            </Link>
+            {currentBrand && (
+              <>
+                <ChevronRight className="w-3 h-3 text-slate-400" />
+                <span className="text-[#006543] font-bold">Hãng: {currentBrand}</span>
+              </>
+            )}
             {activeCategoryObj && (
               <>
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3 h-3 text-slate-400" />
                 <span className="text-[#006543] font-bold">{activeCategoryObj.name}</span>
               </>
             )}
@@ -57,11 +89,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                {activeCategoryObj ? activeCategoryObj.name : 'Danh Mục Thiết Bị Y Tế'}
+                {currentBrand
+                  ? `Thiết Bị & Sản Phẩm Hãng ${currentBrand}`
+                  : activeCategoryObj
+                  ? activeCategoryObj.name
+                  : 'Danh Mục Thiết Bị Y Tế'}
               </h1>
-              <p className="text-sm text-slate-500 mt-1">
-                {activeCategoryObj?.description ||
-                  'Hệ thống trang thiết bị, máy móc và vật tư y tế kỹ thuật cao phân phối chính hãng bởi HSI Corp.'}
+              <p className="text-sm text-slate-500 mt-1 max-w-3xl">
+                {currentBrand
+                  ? `Các dòng thiết bị y tế kỹ thuật cao và vật tư chính hãng từ đối tác ${currentBrand} do HSI Corp phân phối và hỗ trợ kỹ thuật tại Việt Nam.`
+                  : activeCategoryObj?.description ||
+                    'Hệ thống trang thiết bị, máy móc và vật tư y tế kỹ thuật cao phân phối chính hãng bởi HSI Corp.'}
               </p>
             </div>
 
@@ -86,6 +124,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           {/* Search form */}
           <form method="GET" action="/products" className="w-full sm:w-80 relative">
             {currentCategory && <input type="hidden" name="category" value={currentCategory} />}
+            {currentBrand && <input type="hidden" name="brand" value={currentBrand} />}
             <input
               type="text"
               name="search"
@@ -98,7 +137,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
           {/* Active Filter Tags */}
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            {(currentCategory || currentSearch) && (
+            {(currentCategory || currentSearch || currentBrand) && (
               <Link
                 href="/products"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors"
@@ -107,6 +146,30 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 Xóa tất cả bộ lọc
               </Link>
             )}
+
+            {currentBrand && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-[#006543] border border-emerald-200">
+                <span>
+                  Hãng: <strong>{currentBrand}</strong>
+                </span>
+                <Link
+                  href={
+                    currentCategory && currentSearch
+                      ? `/products?category=${currentCategory}&search=${encodeURIComponent(currentSearch)}`
+                      : currentCategory
+                      ? `/products?category=${currentCategory}`
+                      : currentSearch
+                      ? `/products?search=${encodeURIComponent(currentSearch)}`
+                      : '/products'
+                  }
+                  className="hover:text-rose-600 transition-colors ml-1 p-0.5 rounded-full hover:bg-emerald-100"
+                  title="Bỏ lọc theo hãng này"
+                >
+                  <X className="w-3 h-3" />
+                </Link>
+              </span>
+            )}
+
             {currentSearch && (
               <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-[#006543] border border-emerald-200">
                 Từ khóa: &ldquo;{currentSearch}&rdquo;
@@ -127,7 +190,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
               <div className="space-y-1.5">
                 <Link
-                  href={currentSearch ? `/products?search=${encodeURIComponent(currentSearch)}` : '/products'}
+                  href={buildCategoryUrl(undefined)}
                   className={`block px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                     !currentCategory
                       ? 'bg-[#006543] text-white font-bold'
@@ -139,14 +202,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
                 {categories.map((cat) => {
                   const isActive = currentCategory === cat.slug;
-                  const targetUrl = currentSearch
-                    ? `/products?category=${cat.slug}&search=${encodeURIComponent(currentSearch)}`
-                    : `/products?category=${cat.slug}`;
-
                   return (
                     <Link
                       key={cat.id}
-                      href={targetUrl}
+                      href={buildCategoryUrl(cat.slug)}
                       className={`block px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                         isActive
                           ? 'bg-[#006543] text-white font-bold'
@@ -189,14 +248,61 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   totalPages={totalPages}
                   category={currentCategory}
                   search={currentSearch}
+                  brand={currentBrand}
                 />
               </div>
+            ) : currentBrand ? (
+              /* Dedicated Empty State when filtered by brand and 0 items found */
+              <div className="bg-white rounded-3xl p-8 sm:p-12 text-center border border-slate-200 shadow-sm relative overflow-hidden">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-5 text-[#006543]">
+                  <Clock className="w-8 h-8" />
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-emerald-50 text-[#006543] border border-emerald-100 inline-block mb-3">
+                  Đối Tác Chiến Lược: {currentBrand}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-3 tracking-tight">
+                  Danh Mục Thiết Bị & Sản Phẩm Đang Được Cập Nhật
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-relaxed mb-8">
+                  Rất tiếc, danh mục thiết bị và vật tư chuyên khoa của hãng{' '}
+                  <strong className="text-slate-900">{currentBrand}</strong> hiện đang được đội ngũ chuyên
+                  viên kỹ thuật HSI Corp hoàn thiện số hóa hồ sơ pháp lý, catalog và thông số cấu hình chi
+                  tiết.
+                  <br className="hidden sm:inline" /> Quý bệnh viện, phòng khám cần nhận tài liệu kỹ thuật gốc,
+                  báo giá dự án hoặc tư vấn cấu hình thiết bị, xin vui lòng liên hệ trực tiếp với chúng tôi.
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <ConsultationButton
+                    productName={`Thiết bị & Sản phẩm hãng ${currentBrand}`}
+                    label={`Yêu Cầu Tư Vấn Hãng ${currentBrand}`}
+                    className="py-3 px-6 text-xs sm:text-sm font-bold shadow-md"
+                  />
+                  <Link
+                    href="/products"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold transition-colors"
+                  >
+                    <span>Khám phá các thiết bị khác</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-slate-100 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500">
+                  <span className="flex items-center gap-1.5">
+                    <Phone className="w-4 h-4 text-[#006543]" /> Hotline Dự Án:{' '}
+                    <strong className="text-slate-800">024 6685 0182</strong>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#006543]" /> 100% Chính hãng CO/CQ & Đầy đủ giấy
+                    phép Bộ Y Tế
+                  </span>
+                </div>
+              </div>
             ) : (
+              /* Generic empty state */
               <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
                 <Layers className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-slate-800 mb-1">
-                  Chưa tìm thấy thiết bị phù hợp
-                </h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-1">Chưa tìm thấy thiết bị phù hợp</h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto mb-5">
                   Vui lòng thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc danh mục hiện tại.
                 </p>

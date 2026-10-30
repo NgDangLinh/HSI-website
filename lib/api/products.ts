@@ -253,10 +253,11 @@ export interface PaginatedResult<T> {
 export async function getPaginatedProducts(options?: {
   category?: string;
   search?: string;
+  brand?: string;
   page?: number;
   perPage?: number;
 }): Promise<PaginatedResult<MedicalProduct>> {
-  const { category, search, page = 1, perPage = 6 } = options || {};
+  const { category, search, brand, page = 1, perPage = 6 } = options || {};
 
   let allProducts: MedicalProduct[] = [];
   if (cachedProducts) {
@@ -291,7 +292,7 @@ export async function getPaginatedProducts(options?: {
     }
   }
 
-  const filtered = filterProductsList(allProducts, category, search);
+  const filtered = filterProductsList(allProducts, category, search, brand);
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / perPage));
   const validPage = Math.max(1, Math.min(page, totalPages));
@@ -310,14 +311,15 @@ export async function getPaginatedProducts(options?: {
 export async function getProducts(options?: {
   category?: string;
   search?: string;
+  brand?: string;
   perPage?: number;
   page?: number;
 }): Promise<MedicalProduct[]> {
-  const { category, search, perPage = 24, page = 1 } = options || {};
+  const { category, search, brand, perPage = 24, page = 1 } = options || {};
   const startIndex = (page - 1) * perPage;
 
   // If already fetched and cached products, use cache
-  if (cachedProducts && !search && !category) {
+  if (cachedProducts && !search && !category && !brand) {
     return cachedProducts.slice(startIndex, startIndex + perPage);
   }
 
@@ -338,14 +340,14 @@ export async function getProducts(options?: {
       if (Array.isArray(data) && data.length > 0) {
         const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
         cachedProducts = mapped;
-        return filterProductsList(mapped, category, search).slice(startIndex, startIndex + perPage);
+        return filterProductsList(mapped, category, search, brand).slice(startIndex, startIndex + perPage);
       }
     }
   } catch {
     // Graceful fallback to static data
   }
 
-  return filterProductsList(MOCK_PRODUCTS, category, search).slice(startIndex, startIndex + perPage);
+  return filterProductsList(MOCK_PRODUCTS, category, search, brand).slice(startIndex, startIndex + perPage);
 }
 
 export async function getProductById(id: number | string): Promise<MedicalProduct | null> {
@@ -420,7 +422,30 @@ export async function getProductCategories(): Promise<ProductCategory[]> {
   return MOCK_CATEGORIES;
 }
 
-function filterProductsList(products: MedicalProduct[], category?: string, search?: string): MedicalProduct[] {
+function extractBrandKeywords(brand: string): string[] {
+  const b = brand.toLowerCase();
+  if (b.includes('surtex')) return ['surtex'];
+  if (b.includes('pentax')) return ['pentax', 'epk-i8020c', 'epk-i5500c', 'imagina'];
+  if (b.includes('roche')) return ['roche'];
+  if (b.includes('sonoscape')) return ['sonoscape'];
+  if (b.includes('pfm')) return ['pfm', 'nit-occlud'];
+  if (b.includes('translumina')) return ['translumina', 'vivo isar'];
+  if (b.includes('cell fusion')) return ['cell fusion', 'cica', 'biome', 'toning peel'];
+  if (b.includes('fenghua')) return ['fenghua'];
+  if (b.includes('apt') || b.includes('tipmed')) return ['apt', 'tipmed'];
+  if (b.includes('hexacath')) return ['hexacath'];
+  if (b.includes('anrei')) return ['anrei'];
+
+  const words = brand.split(/[\s,./-]+/).filter((w) => w.length > 2);
+  return words.length > 0 ? words.map((w) => w.toLowerCase()) : [b];
+}
+
+function filterProductsList(
+  products: MedicalProduct[],
+  category?: string,
+  search?: string,
+  brand?: string
+): MedicalProduct[] {
   let list = [...products];
 
   if (category) {
@@ -435,6 +460,27 @@ function filterProductsList(products: MedicalProduct[], category?: string, searc
         return false;
       })
     );
+  }
+
+  if (brand) {
+    const keywords = extractBrandKeywords(brand);
+    list = list.filter((p) => {
+      const pMfg = (p.manufacturer || '').toLowerCase();
+      const pName = p.name.toLowerCase();
+      const pSku = p.sku.toLowerCase();
+      const pShortDesc = (p.short_description || '').toLowerCase();
+      const pDesc = (p.description || '').toLowerCase();
+
+      return keywords.some(
+        (kw) =>
+          pMfg.includes(kw) ||
+          pName.includes(kw) ||
+          pSku.includes(kw) ||
+          pShortDesc.includes(kw) ||
+          pDesc.includes(kw) ||
+          p.categories.some((c) => c.name.toLowerCase().includes(kw) || c.slug.toLowerCase().includes(kw))
+      );
+    });
   }
 
   if (search) {

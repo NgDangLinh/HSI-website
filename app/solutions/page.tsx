@@ -1,10 +1,12 @@
 import React from 'react';
 import SolutionsView from '@/components/solutions/SolutionsView';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
-  title: 'Giải Pháp Đầu Tư Y Tế & Xã Hội Hóa Bệnh Viện | HSI Corp',
+  title: 'Giải Pháp Đầu Tư Tổng Thể | HSI Corp',
   description:
-    'Gói giải pháp đặt máy, liên doanh liên kết, cho thuê thiết bị y tế kỹ thuật cao và tư vấn tiếp cận nguồn vốn ưu đãi cho cơ sở y tế.',
+    'Tư vấn giải pháp tài chính, cho thuê thiết bị y tế, bán thiết bị trả chậm, đối tác công tư PPP, cung cấp thiết bị kỹ thuật cao và hợp tác xây dựng quản lý bệnh viện.',
 };
 
 export default function SolutionsPage() {

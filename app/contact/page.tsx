@@ -87,12 +87,9 @@ export default function ContactPage() {
               <div className="space-y-4 text-xs">
                 {BRANCHES.map((b, idx) => (
                   <div key={idx} className="border-l-2 border-[#006543] pl-3">
-                    <div className="flex items-center justify-between">
-                      <strong className="text-slate-900">
-                        {b.name} ({b.city})
-                      </strong>
-                      <span className="text-[#006543] font-mono font-semibold">{b.phone}</span>
-                    </div>
+                    <strong className="text-slate-900 block font-bold">
+                      {b.name} ({b.city})
+                    </strong>
                     <p className="text-slate-500 text-[11px] mt-0.5">{b.address}</p>
                   </div>
                 ))}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ChevronRight, Briefcase, Users, HeartHandshake, GraduationCap, MapPin, Clock, ArrowRight, Mail, Phone } from 'lucide-react';
+import { ChevronRight, Briefcase, MapPin, Clock, ArrowRight, Mail, Phone } from 'lucide-react';
 import { COMPANY_INFO } from '@/lib/data/companyInfo';
 
 const OPEN_POSITIONS = [
@@ -72,38 +72,6 @@ export default function CareersPage() {
           </div>
         </div>
 
-        {/* Benefits Strip */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center mb-4">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1.5">Đào Tạo Quốc Tế Chuyên Sâu</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Cơ hội tham gia các khóa đào tạo kỹ thuật y sinh trực tiếp từ chuyên gia hãng sản xuất tại Đức, Nhật Bản và Anh quốc.
-            </p>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center mb-4">
-              <HeartHandshake className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1.5">Chính Sách Đãi Ngộ Cạnh Tranh</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Thu nhập hấp dẫn, thưởng hiệu quả dự án định kỳ, bảo hiểm sức khỏe quốc tế cao cấp và các phúc lợi gia đình trọn vẹn.
-            </p>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#006543] flex items-center justify-center mb-4">
-              <Users className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1.5">Văn Hóa Tôn Trọng & Đồng Hành</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Môi trường làm việc nhân văn, đề cao tinh thần phụng sự ngành y tế với phương châm &ldquo;Together for life&rdquo;.
-            </p>
-          </div>
-        </div>
 
         {/* Open Positions List */}
         <div className="mb-14">

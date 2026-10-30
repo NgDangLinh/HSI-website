@@ -7,6 +7,7 @@ interface PaginationProps {
   totalPages: number;
   category?: string;
   search?: string;
+  brand?: string;
   baseUrl?: string;
 }
 
@@ -15,6 +16,7 @@ export default function Pagination({
   totalPages,
   category,
   search,
+  brand,
   baseUrl = '/products',
 }: PaginationProps) {
   if (totalPages <= 1) return null;
@@ -23,6 +25,7 @@ export default function Pagination({
     const params = new URLSearchParams();
     if (category) params.set('category', category);
     if (search) params.set('search', search);
+    if (brand) params.set('brand', brand);
     if (pageNumber > 1) params.set('page', pageNumber.toString());
     const qs = params.toString();
     return qs ? `${baseUrl}?${qs}` : baseUrl;

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MedicalProduct, ProductCategory } from '@/lib/types/product';
 import { NewsPost } from '@/lib/data/mockPosts';
+import { MEDICAL_SUPPLIES } from '@/lib/data/medicalSupplies';
 import { COMPANY_INFO, SOLUTIONS, PARTNERS } from '@/lib/data/companyInfo';
 import ProductCard from '@/components/product/ProductCard';
 import HeroActions from '@/components/home/HeroActions';
@@ -15,67 +16,38 @@ import {
   ArrowRight,
   Building2,
   Stethoscope,
-  LineChart,
-  Wrench,
-  CheckCircle,
   Calendar,
-  Layers,
-  ChevronRight,
+  Landmark,
+  CalendarClock,
+  Handshake,
+  ShieldCheck,
+  HeartHandshake,
+  Quote,
 } from 'lucide-react';
 
 interface HomeViewProps {
   products: MedicalProduct[];
-  categories: ProductCategory[];
+  categories?: ProductCategory[];
   posts: NewsPost[];
 }
 
-export default function HomeView({ products, categories, posts }: HomeViewProps) {
+export default function HomeView({ products, posts }: HomeViewProps) {
   const { language, dict } = useLanguage();
 
   const solutionIcons: Record<string, React.ReactNode> = {
-    xahoihoa: <Building2 className="w-6 h-6 text-[#006543]" />,
-    chothue: <Stethoscope className="w-6 h-6 text-[#006543]" />,
-    ppp: <LineChart className="w-6 h-6 text-[#006543]" />,
-    baotri: <Wrench className="w-6 h-6 text-[#006543]" />,
+    taichinh: <Landmark className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
+    chothue: <Stethoscope className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
+    tracham: <CalendarClock className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
+    ppp: <Handshake className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
+    thietbi: <ShieldCheck className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
+    xaydung: <Building2 className="w-6 h-6 text-emerald-400 group-hover:text-white transition-colors" />,
   };
 
-  const solutionsData = SOLUTIONS.map((sol) => {
-    if (language === 'en') {
-      if (sol.id === 'xahoihoa') {
-        return {
-          ...sol,
-          title: 'Healthcare Socialization & Joint Ventures',
-          description:
-            'Co-investing modern medical equipment for public hospitals with transparent revenue sharing and full regulatory compliance.',
-        };
-      }
-      if (sol.id === 'chothue') {
-        return {
-          ...sol,
-          title: 'High-Tech Medical Equipment Leasing',
-          description:
-            'Flexible device leasing plans enabling hospitals to adopt advanced technologies without heavy upfront capital expenditure.',
-        };
-      }
-      if (sol.id === 'ppp') {
-        return {
-          ...sol,
-          title: 'Public-Private Partnership (PPP) & Financial Advisory',
-          description:
-            'Consulting on preferential credit access from partner banks and establishing efficient operational governance models for medical departments.',
-        };
-      }
-      if (sol.id === 'baotri') {
-        return {
-          ...sol,
-          title: '24/7 Technical Service & Maintenance',
-          description:
-            'Factory-trained biomedical engineers providing periodic calibration, preventive maintenance, and authentic CO/CQ spare parts.',
-        };
-      }
-    }
-    return sol;
-  });
+  const solutionsData = SOLUTIONS.map((sol) => ({
+    id: sol.id,
+    title: language === 'en' ? sol.titleEn : sol.title,
+    description: language === 'en' ? sol.shortDescriptionEn : sol.shortDescription,
+  }));
 
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col">
@@ -104,22 +76,6 @@ export default function HomeView({ products, categories, posts }: HomeViewProps)
               <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
                 {dict.home.heroDesc}
               </p>
-
-              {/* Key Highlights */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-300 font-medium">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{dict.home.coCq}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{dict.home.training}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{dict.home.engineers}</span>
-                </div>
-              </div>
 
               {/* Action Buttons */}
               <HeroActions />
@@ -194,55 +150,112 @@ export default function HomeView({ products, categories, posts }: HomeViewProps)
         </div>
       </section>
 
-      {/* 3. FEATURED PRODUCT CATEGORIES */}
-      <section className="py-16 bg-slate-50">
+      {/* 3. SỨ MỆNH HSI CORP (MISSION SECTION) */}
+      <section className="py-16 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-1">
-                {dict.home.categoriesBadge}
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                {dict.home.categoriesTitle}
-              </h2>
-            </div>
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#006543] hover:text-[#055b38] transition-colors"
-            >
-              {dict.home.viewAllCategories} <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-2">
+              {dict.home.missionBadge}
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              {dict.home.missionTitle}
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/products?category=${cat.slug}`}
-                className="group p-6 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#006543] flex items-center justify-center mb-4 group-hover:bg-[#006543] group-hover:text-white transition-colors">
-                    <Layers className="w-6 h-6" />
+          {/* Featured Mission Quote Banner */}
+          <div className="relative bg-gradient-to-br from-slate-950 via-[#003825] to-slate-900 text-white rounded-3xl p-8 sm:p-10 mb-10 shadow-lg overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
+              <Quote className="w-10 h-10 text-emerald-400 mx-auto opacity-70" />
+              <p className="text-base sm:text-xl font-medium leading-relaxed text-slate-100 italic">
+                &ldquo;{dict.home.missionQuote}&rdquo;
+              </p>
+              <div className="pt-2">
+                <span className="text-xs font-bold tracking-wider text-emerald-400 uppercase">
+                  — HSI Corp • Together for life —
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 Strategic Mission Pillars */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {dict.home.missionPillars.map((pillar, idx) => {
+              const pillarIcons = [
+                <HeartHandshake key={0} className="w-6 h-6 text-[#006543]" />,
+                <Building2 key={1} className="w-6 h-6 text-[#006543]" />,
+                <ShieldCheck key={2} className="w-6 h-6 text-[#006543]" />,
+              ];
+
+              return (
+                <div
+                  key={idx}
+                  className="p-7 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-emerald-400 hover:bg-white hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-5">
+                      {pillarIcons[idx]}
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-2.5">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      {pillar.desc}
+                    </p>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#006543] transition-colors">
-                    {cat.name}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. MEDICAL SUPPLIES SHOWCASE (NON-INTERACTIVE) */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 text-center max-w-3xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-2">
+              {dict.home.suppliesBadge}
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-3">
+              {dict.home.suppliesTitle}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+              {dict.home.suppliesDesc}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {MEDICAL_SUPPLIES.map((item) => (
+              <div
+                key={item.id}
+                className="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs hover:shadow-xl hover:-translate-y-1 hover:border-[#006543]/40 transition-all duration-300 cursor-default select-none flex flex-col"
+              >
+                {/* Image Frame */}
+                <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+                  <Image
+                    src={item.imageUrl}
+                    alt={language === 'en' ? item.titleEn : item.titleVi}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+
+                {/* Title */}
+                <div className="p-4 sm:p-5 flex-1 flex items-center justify-center text-center bg-white">
+                  <h3 className="font-bold text-slate-800 text-xs sm:text-sm md:text-base leading-snug group-hover:text-[#006543] transition-colors">
+                    {language === 'en' ? item.titleEn : item.titleVi}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                    {cat.description || 'Trang thiết bị và dụng cụ y tế kỹ thuật cao phục vụ điều trị chuyên khoa.'}
-                  </p>
                 </div>
-                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#006543]">
-                  <span>{dict.home.exploreDevices}</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. FEATURED PRODUCTS SHOWCASE */}
+      {/* 5. FEATURED PRODUCTS SHOWCASE */}
       <section className="py-16 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -274,94 +287,54 @@ export default function HomeView({ products, categories, posts }: HomeViewProps)
         </div>
       </section>
 
-      {/* 5. INVESTMENT SOLUTIONS & SERVICES */}
-      <section className="py-16 bg-gradient-to-b from-slate-900 to-slate-950 text-white">
+      {/* 6. INVESTMENT SOLUTIONS & SERVICES */}
+      <section className="py-20 bg-gradient-to-b from-slate-900 to-slate-950 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-1">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-2">
               {dict.home.solutionsBadge}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
               {dict.home.solutionsTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-2">
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto">
               {dict.home.solutionsDesc}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {solutionsData.map((sol) => (
               <div
                 key={sol.id}
-                className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-white/10 transition-all flex flex-col justify-between"
+                className="group p-6 sm:p-7 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-white/[0.08] transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center mb-5">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center mb-5 group-hover:bg-[#006543] group-hover:scale-105 transition-all duration-300">
                     {solutionIcons[sol.id]}
                   </div>
-                  <h3 className="font-bold text-white text-base mb-2">{sol.title}</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">{sol.description}</p>
-                </div>
-                <div className="mt-6 pt-4 border-t border-white/10">
-                  <Link
-                    href="/solutions"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300"
-                  >
-                    {dict.home.learnModel} <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. WHY CHOOSE HSI CORP */}
-      <section className="py-20 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#006543] block mb-2">
-              {dict.home.whyChooseUsBadge}
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              {dict.home.whyChooseUsTitle}
-            </h2>
-            <p className="text-xs sm:text-base text-slate-600 mt-3 leading-relaxed">
-              {dict.home.whyChooseUsDesc}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {dict.home.whyChooseItems.map((item, index) => (
-              <div
-                key={index}
-                className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#006543]/40 transition-all duration-300 flex flex-col"
-              >
-                <div className="relative aspect-[16/11] overflow-hidden bg-slate-100">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#006543] text-white text-xs font-black flex items-center justify-center shadow-md">
-                    0{index + 1}
-                  </div>
-                </div>
-                <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#006543] transition-colors">
-                    {item.title}
+                  <h3 className="font-bold text-white text-base sm:text-lg mb-2.5 group-hover:text-emerald-400 transition-colors leading-snug">
+                    {sol.title}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {item.description}
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    {sol.description}
                   </p>
                 </div>
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <Link
+                    href={`/solutions#${sol.id}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                  >
+                    <span>{dict.home.learnModel}</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <span className="text-[11px] text-slate-500 font-medium">HSI Corp</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* 7. GLOBAL STRATEGIC PARTNERS */}
       <section className="py-16 bg-white border-b border-slate-200">
