@@ -38,9 +38,14 @@ interface WooStoreRawProduct {
   featured?: boolean;
 }
 
-// In-memory cache for fast dev & SSR performance
-let cachedProducts: MedicalProduct[] | null = null;
-let cachedCategories: ProductCategory[] | null = null;
+// In-memory cache with TTL (Time-To-Live) for high-performance SSR while enabling automatic background refresh
+let memoryProductsCache: MedicalProduct[] | null = null;
+let memoryProductsCacheTime = 0;
+const PRODUCTS_CACHE_TTL_MS = 60 * 1000; // 60 seconds TTL
+
+let memoryCategoriesCache: ProductCategory[] | null = null;
+let memoryCategoriesCacheTime = 0;
+const CATEGORIES_CACHE_TTL_MS = 300 * 1000; // 5 minutes TTL
 
 const COMMON_HEADERS = {
   'User-Agent':
@@ -250,6 +255,44 @@ export interface PaginatedResult<T> {
   perPage: number;
 }
 
+export async function getAllProducts(): Promise<MedicalProduct[]> {
+  const now = Date.now();
+  if (memoryProductsCache && now - memoryProductsCacheTime < PRODUCTS_CACHE_TTL_MS) {
+    return memoryProductsCache;
+  }
+
+  try {
+    const controller = new AbortController();
+    // 8-second timeout for reliable response from WordPress WooCommerce API on shared hosting
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products?per_page=100`, {
+      headers: COMMON_HEADERS,
+      signal: controller.signal,
+      next: { revalidate: 60, tags: ['products'] },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
+        memoryProductsCache = mapped;
+        memoryProductsCacheTime = now;
+        return mapped;
+      }
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[Products API] Failed to fetch live products from WordPress, using fallback:', err);
+    }
+  }
+
+  // Graceful fallback: return memory cache if available, else static mock data
+  return memoryProductsCache || MOCK_PRODUCTS;
+}
+
 export async function getPaginatedProducts(options?: {
   category?: string;
   search?: string;
@@ -259,39 +302,7 @@ export async function getPaginatedProducts(options?: {
 }): Promise<PaginatedResult<MedicalProduct>> {
   const { category, search, brand, page = 1, perPage = 6 } = options || {};
 
-  let allProducts: MedicalProduct[] = [];
-  if (cachedProducts) {
-    allProducts = cachedProducts;
-  } else {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-      const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products?per_page=100`, {
-        headers: COMMON_HEADERS,
-        signal: controller.signal,
-        next: { revalidate: 60 },
-      });
-
-      clearTimeout(timeoutId);
-
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
-          cachedProducts = mapped;
-          allProducts = mapped;
-        }
-      }
-    } catch {
-      // Fallback
-    }
-
-    if (allProducts.length === 0) {
-      allProducts = MOCK_PRODUCTS;
-    }
-  }
-
+  const allProducts = await getAllProducts();
   const filtered = filterProductsList(allProducts, category, search, brand);
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / perPage));
@@ -317,57 +328,29 @@ export async function getProducts(options?: {
 }): Promise<MedicalProduct[]> {
   const { category, search, brand, perPage = 24, page = 1 } = options || {};
   const startIndex = (page - 1) * perPage;
+  const allProducts = await getAllProducts();
 
-  // If already fetched and cached products, use cache
-  if (cachedProducts && !search && !category && !brand) {
-    return cachedProducts.slice(startIndex, startIndex + perPage);
-  }
-
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-    const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products?per_page=100`, {
-      headers: COMMON_HEADERS,
-      signal: controller.signal,
-      next: { revalidate: 60 },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        const mapped = (data as WooStoreRawProduct[]).map(mapWooStoreProductToMedicalProduct);
-        cachedProducts = mapped;
-        return filterProductsList(mapped, category, search, brand).slice(startIndex, startIndex + perPage);
-      }
-    }
-  } catch {
-    // Graceful fallback to static data
-  }
-
-  return filterProductsList(MOCK_PRODUCTS, category, search, brand).slice(startIndex, startIndex + perPage);
+  return filterProductsList(allProducts, category, search, brand).slice(startIndex, startIndex + perPage);
 }
 
 export async function getProductById(id: number | string): Promise<MedicalProduct | null> {
   const numId = Number(id);
 
-  // Check in-memory cache first
-  if (cachedProducts) {
-    const cachedItem = cachedProducts.find((p) => p.id === numId || p.slug === id);
-    if (cachedItem) return cachedItem;
-  }
+  // 1. Check in all fetched/cached products first
+  const allProducts = await getAllProducts();
+  const found = allProducts.find((p) => (!isNaN(numId) && p.id === numId) || p.slug === id);
+  if (found) return found;
 
-  try {
-    if (!isNaN(numId)) {
+  // 2. If not found in the list, attempt fetching single product from WordPress by ID
+  if (!isNaN(numId) && numId > 0) {
+    try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
 
       const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products/${numId}`, {
         headers: COMMON_HEADERS,
         signal: controller.signal,
-        next: { revalidate: 60 },
+        next: { revalidate: 60, tags: ['products'] },
       });
 
       clearTimeout(timeoutId);
@@ -376,26 +359,30 @@ export async function getProductById(id: number | string): Promise<MedicalProduc
         const item: WooStoreRawProduct = await res.json();
         return mapWooStoreProductToMedicalProduct(item);
       }
+    } catch {
+      // Graceful fallback
     }
-  } catch {
-    // Graceful fallback
   }
 
-  const found = MOCK_PRODUCTS.find((p) => p.id === numId || p.slug === id);
-  return found || MOCK_PRODUCTS[0];
+  // 3. Fallback to mock products if WP is unavailable
+  const mockFound = MOCK_PRODUCTS.find((p) => (!isNaN(numId) && p.id === numId) || p.slug === id);
+  return mockFound || MOCK_PRODUCTS[0] || null;
 }
 
 export async function getProductCategories(): Promise<ProductCategory[]> {
-  if (cachedCategories) return cachedCategories;
+  const now = Date.now();
+  if (memoryCategoriesCache && now - memoryCategoriesCacheTime < CATEGORIES_CACHE_TTL_MS) {
+    return memoryCategoriesCache;
+  }
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products/categories?per_page=100`, {
       headers: COMMON_HEADERS,
       signal: controller.signal,
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ['categories'] },
     });
 
     clearTimeout(timeoutId);
@@ -403,7 +390,7 @@ export async function getProductCategories(): Promise<ProductCategory[]> {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        cachedCategories = (data as WooStoreRawCategory[])
+        const mapped = (data as WooStoreRawCategory[])
           .filter((c) => c.count && c.count > 0)
           .map((c) => ({
             id: c.id,
@@ -412,14 +399,18 @@ export async function getProductCategories(): Promise<ProductCategory[]> {
             count: c.count,
             description: c.description || `Sản phẩm và thiết bị chuyên khoa thuộc danh mục ${c.name}.`,
           }));
-        return cachedCategories;
+        memoryCategoriesCache = mapped;
+        memoryCategoriesCacheTime = now;
+        return mapped;
       }
     }
-  } catch {
-    // Graceful fallback
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[Categories API] Failed to fetch live categories from WordPress, using fallback:', err);
+    }
   }
 
-  return MOCK_CATEGORIES;
+  return memoryCategoriesCache || MOCK_CATEGORIES;
 }
 
 function extractBrandKeywords(brand: string): string[] {

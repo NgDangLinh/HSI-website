@@ -20,7 +20,10 @@ interface WpRawPost {
   };
 }
 
-let cachedPosts: NewsPost[] | null = null;
+// In-memory cache with TTL (Time-To-Live) for high-performance SSR while enabling automatic background refresh
+let memoryPostsCache: NewsPost[] | null = null;
+let memoryPostsCacheTime = 0;
+const POSTS_CACHE_TTL_MS = 300 * 1000; // 5 minutes TTL
 
 const COMMON_HEADERS = {
   'User-Agent':
@@ -63,17 +66,20 @@ function formatDate(isoString: string): string {
 }
 
 export async function getPosts(perPage = 10): Promise<NewsPost[]> {
-  if (cachedPosts) return cachedPosts.slice(0, perPage);
+  const now = Date.now();
+  if (memoryPostsCache && now - memoryPostsCacheTime < POSTS_CACHE_TTL_MS) {
+    return memoryPostsCache.slice(0, perPage);
+  }
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     // Fetch specifically category 45 ("Truyền thông")
-    const res = await fetch(`${WP_URL}/wp-json/wp/v2/posts?categories=45&_embed&per_page=${perPage}`, {
+    const res = await fetch(`${WP_URL}/wp-json/wp/v2/posts?categories=45&_embed&per_page=100`, {
       headers: COMMON_HEADERS,
       signal: controller.signal,
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ['posts'] },
     });
 
     clearTimeout(timeoutId);
@@ -81,7 +87,7 @@ export async function getPosts(perPage = 10): Promise<NewsPost[]> {
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        cachedPosts = (data as WpRawPost[]).map((item) => {
+        memoryPostsCache = (data as WpRawPost[]).map((item) => {
           const imageUrl = `/images/posts/post-${item.id}.jpg`;
           let remoteImageUrl = '';
           if (
@@ -107,14 +113,17 @@ export async function getPosts(perPage = 10): Promise<NewsPost[]> {
             author,
           };
         });
-        return cachedPosts.slice(0, perPage);
+        memoryPostsCacheTime = now;
+        return memoryPostsCache.slice(0, perPage);
       }
     }
-  } catch {
-    // Graceful fallback to MOCK_POSTS (which contains all 5 authentic posts)
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[WordPress API] Failed to fetch live posts from WordPress, using fallback:', err);
+    }
   }
 
-  return MOCK_POSTS.slice(0, perPage);
+  return (memoryPostsCache || MOCK_POSTS).slice(0, perPage);
 }
 
 export async function getPostByIdOrSlug(idOrSlug: string | number): Promise<NewsPost | null> {
